@@ -48,10 +48,9 @@ export const login = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Only set to true in production
-      path: '/',
-      sameSite: 'None', // Required for cross-site requests
-      domain: ".estate-2qkt.onrender.com", // Adjusted to include a leading dot
+  // Required for cross-site requests
+      // domain: ".estate-2qkt.onrender.com", // Adjusted to include a leading dot
+
       maxAge: age,
     }).status(200).json(userInfo);
 
