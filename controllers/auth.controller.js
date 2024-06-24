@@ -28,41 +28,39 @@ export const register = async (req, res) => {
   }
 };
 
-export const login =async (req, res) => {
-  const {username,password} = req.body;
+export const login = async (req, res) => {
+  const { username, password } = req.body;
 
-  try{
-    const user = await prisma.user.findUnique({where:{username}});
-    if(!user)return res.status(401).json({message:'Invalid Credentials!'});
-    const isPasswordValid = await bcrypt.compare(password,user.password);
+  try {
+    const user = await prisma.user.findUnique({ where: { username } });
+    if (!user) return res.status(401).json({ message: 'Invalid Credentials!' });
 
-    if(!isPasswordValid)return res.status(401).json({message:"Invalid Credentials!"});
-    const age = 1000*60*60*24*7;
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) return res.status(401).json({ message: 'Invalid Credentials!' });
+
+    const age = 1000 * 60 * 60 * 24 * 7;
     const token = jwt.sign({
-      id:user.id,
-      isAdmin : true,
-    },process.env.JWT_SECRET_KEY,{expiresIn:age});
-    console.log(user.id);
+      id: user.id,
+      isAdmin: true, // Example of adding additional claims to the token
+    }, process.env.JWT_SECRET_KEY, { expiresIn: age });
 
-    const {password:userPassword,...userInfo} = user
+    const { password: userPassword, ...userInfo } = user;
 
-
-    // res.setHeader("Set-Cookie","test="+"myValue");
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true, // Uncomment in production or HTTPS environments
+      secure: process.env.NODE_ENV === 'production', // Only set to true in production
       path: '/',
-      sameSite : "none",
-      domain: "estate-2qkt.onrender.com", // Set to your domain name without protocol
+      sameSite: 'None', // Required for cross-site requests
+      domain: ".estate-2qkt.onrender.com", // Adjusted to include a leading dot
       maxAge: age,
     }).status(200).json(userInfo);
 
-    
-    
-  }catch(err){
+  } catch (err) {
     console.log(err);
+    res.status(500).json({ message: "Failed to log in!" });
   }
 };
+
 
 export const logout = (req, res) => {
   res.clearCookie("token").status(200).json({message:"logout successfull"})
