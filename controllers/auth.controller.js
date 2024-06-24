@@ -1,14 +1,13 @@
 import bcrypt from 'bcrypt';
 import prisma from '../lib/prisma.js';
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
+
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
     // HASH THE PASSWORD
-
     const hashedPassword = await bcrypt.hash(password, 10);
-
     console.log(hashedPassword);
 
     // CREATE A NEW USER AND SAVE TO DB
@@ -19,7 +18,6 @@ export const register = async (req, res) => {
         password: hashedPassword,
       },
     });
-
 
     res.status(201).json({ message: "User created successfully" });
   } catch (err) {
@@ -38,7 +36,7 @@ export const login = async (req, res) => {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) return res.status(401).json({ message: 'Invalid Credentials!' });
 
-    const age = 1000 * 60 * 60 * 24 * 7;
+    const age = 1000 * 60 * 60 * 24 * 7; // 1 week
     const token = jwt.sign({
       id: user.id,
       isAdmin: true, // Example of adding additional claims to the token
@@ -48,9 +46,9 @@ export const login = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-  // Required for cross-site requests
-      // domain: ".estate-2qkt.onrender.com", // Adjusted to include a leading dot
-
+      secure: true, // Ensures cookie is sent over HTTPS
+      sameSite: 'None', // Required for cross-site requests
+      domain: 'estate-2qkt.onrender.com', // Domain for the deployed app
       maxAge: age,
     }).status(200).json(userInfo);
 
@@ -60,7 +58,11 @@ export const login = async (req, res) => {
   }
 };
 
-
 export const logout = (req, res) => {
-  res.clearCookie("token").status(200).json({message:"logout successfull"})
+  res.clearCookie("token", {
+    domain: 'estate-2qkt.onrender.com', // Ensure this matches the domain set in the login cookie
+    path: '/', // Ensure path is set correctly
+    secure: true, // Ensure this is consistent with the login cookie
+    sameSite: 'None', // Ensure this is consistent with the login cookie
+  }).status(200).json({ message: "Logout successful" });
 };
