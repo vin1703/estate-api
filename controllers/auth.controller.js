@@ -52,6 +52,7 @@ export const login =async (req, res) => {
       httpOnly: true,
       secure: true, // Uncomment in production or HTTPS environments
       path: '/',
+      sameSite : "none",
       domain: "estate-2qkt.onrender.com", // Set to your domain name without protocol
       maxAge: age,
     }).status(200).json(userInfo);
