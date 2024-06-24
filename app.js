@@ -13,15 +13,15 @@ const app = express();
 
 // console.log('test3');
 app.use(cors({origin:process.env.CLIENT_URL,credentials:true}));
-app.use(session({
-    secret: `${process.env.JWT_SECRET_KEY}`,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      secure: true, // Use 'secure' in production
-      sameSite: 'None'
-    }
-  }));
+// app.use(session({
+//     secret: `${process.env.JWT_SECRET_KEY}`,
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: {
+//       secure: true, // Use 'secure' in production
+//       sameSite: 'None'
+//     }
+//   }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
