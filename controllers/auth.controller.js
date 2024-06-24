@@ -48,11 +48,14 @@ export const login =async (req, res) => {
 
 
     // res.setHeader("Set-Cookie","test="+"myValue");
-    res.cookie("token",token,{
-      httpOnly : true,
-      // secure:true,
-      maxAge: age,
-    }).status(200).json(userInfo)
+    res.cookie("token", token, {
+      httpOnly: true, // Ensures the cookie is accessible only via HTTP(S)
+      // secure: true, // Uncomment this in production or HTTPS environments
+      path: '/', // Cookie is valid for all paths on the domain
+      domain: "https://estate-2qkt.onrender.com/", // Set this to your domain in production, or leave as "" for localhost
+      maxAge: age, // Cookie expires after 7 days (in milliseconds)
+    }).status(200).json(userInfo);
+    
   }catch(err){
     console.log(err);
   }
