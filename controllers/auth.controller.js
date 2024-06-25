@@ -48,7 +48,7 @@ export const login = async (req, res) => {
       httpOnly: true,
       secure: true, // Ensures cookie is sent over HTTPS
       sameSite: 'None', // Required for cross-site requests
-      domain: 'estate-2qkt.onrender.com', // Domain for the deployed app
+      domain: '.estate-2qkt.onrender.com', // Domain for the deployed app
       maxAge: age,
     }).status(200).json(userInfo);
 
@@ -60,7 +60,7 @@ export const login = async (req, res) => {
 
 export const logout = (req, res) => {
   res.clearCookie("token", {
-    domain: 'estate-2qkt.onrender.com', // Ensure this matches the domain set in the login cookie
+    domain: '.estate-2qkt.onrender.com', // Ensure this matches the domain set in the login cookie
     path: '/', // Ensure path is set correctly
     secure: true, // Ensure this is consistent with the login cookie
     sameSite: 'None', // Ensure this is consistent with the login cookie
