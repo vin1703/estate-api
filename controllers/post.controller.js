@@ -8,13 +8,16 @@ export const getPost = async(req,res)=>{
             postDetail:true,
             user:{
                 select:{
+                    id : true,
                     username:true,
                     avatar:true
                 }
             }
         }});
         let userId;
-        const token = req.cookies.token;
+        const token = req.headers.token.split(" ")[1];
+        console.log("token")
+        console.log(token);
         if(!token){
           userId = null;
         }else{

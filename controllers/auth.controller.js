@@ -42,15 +42,9 @@ export const login = async (req, res) => {
       isAdmin: true, // Example of adding additional claims to the token
     }, process.env.JWT_SECRET_KEY, { expiresIn: age });
 
-    const { password: userPassword, ...userInfo } = user;
+    const { password: userPassword,...userInfo } = user;
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true, // Ensures cookie is sent over HTTPS
-      sameSite: 'None', // Required for cross-site requests
-      domain: '.estate-2qkt.onrender.com', // Domain for the deployed app
-      maxAge: age,
-    }).status(200).json(userInfo);
+    res.status(200).json({userInfo,accessToken:token});
 
   } catch (err) {
     console.log(err);
