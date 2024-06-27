@@ -18,8 +18,15 @@ export const register = async (req, res) => {
         password: hashedPassword,
       },
     });
+    const age = 1000 * 60 * 60 * 24 * 7; // 1 week
+    const token = jwt.sign({
+      id: newUser.id,
+      isAdmin: true, // Example of adding additional claims to the token
+    }, process.env.JWT_SECRET_KEY, { expiresIn: age });
 
-    res.status(201).json({ message: "User created successfully" });
+    const { password: userPassword,...userInfo } = newUser;
+
+    res.status(201).json({userInfo,accessToken:token});
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Failed to create user!" });
